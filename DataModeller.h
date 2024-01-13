@@ -5,6 +5,7 @@
 #include <variant>
 #include <memory>
 #include <vector>
+#include <ostream>
 
 using BusinessPointer = std::unique_ptr<BusinessOwner>;
 using EMpPointer = std::unique_ptr<Employee>;
@@ -34,6 +35,8 @@ public:
     std::vector<float> goodsPrices() const { return _goodsPrices; }
 
     const Vtype &instance() const { return _instance; }
+
+    friend std::ostream &operator<<(std::ostream &os, const DataModeller &rhs);
 };
 
 #endif // DAYAMODELLER_H

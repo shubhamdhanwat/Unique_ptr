@@ -3,6 +3,9 @@
 #include <memory>
 #include <vector>
 #include "DataModeller.h"
+#include<mutex>
+
+std::mutex mt;
 
 void CreateObjects(Container &data)
 {
@@ -60,18 +63,24 @@ void CalculateTaxPayable(const Container &data)
         if (std::holds_alternative<BusinessPointer>(val))
         {
             const BusinessPointer &p = std::get<BusinessPointer>(val);
+            mt.lock();
             std::cout << "Tax is " << 0.1f * (p->reveue() - p->expense());
+            mt.unlock();
         }
         else
         {
             const EMpPointer &p = std::get<EMpPointer>(val);
             if (p->type() == EmployeeType::REGULAR)
             {
+                mt.lock();
                 std::cout << "Tax is 10% " << 0.1f * p->salary() << "\n";
+                mt.unlock();
             }
             else
             {
+                std::lock_guard<std::mutex> lk(mt);
                 std::cout << "Tax is 20% " << 0.2f * p->salary() << "\n";
+                
             }
         }
     }
